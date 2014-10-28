@@ -13,7 +13,7 @@
 import java.util.Arrays;
 public class Fast {
     
-    public void collinear(int size, Point[] points) {
+    private void collinear(int size, Point[] points) {
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
         StdDraw.setPenRadius(0.01);
