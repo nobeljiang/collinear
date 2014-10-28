@@ -13,43 +13,34 @@
 import java.util.Arrays;
 public class Fast {
     
-    public static void main(String[] args) {
-        In in = new In(args[0]);      // input file
-        int N = in.readInt();         // number of points N
-
-        // repeatedly read in sites to open and draw resulting system
-        Point[] points = new Point[N];
-
+    public void collinear(int size, Point[] points) {
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
         StdDraw.setPenRadius(0.01);
-        int x, y;            
-        for (int i = 0; i < N; i++) {
-            x = in.readInt();
-            y = in.readInt();
-            points[i] = new Point(x, y);
+        for (int i = 0; i < size; i++) {
             points[i].draw();
         }
-        StdDraw.setPenRadius();            
+        StdDraw.setPenRadius();   
+        
         Arrays.sort(points);
         double slope1, slope2;
-        double[] slopeOld = new double[N/4];
-        Point[][] slopeRecord = new Point[N/4][N];
+        double[] slopeOld = new double[size/4];
+        Point[][] slopeRecord = new Point[size/4][size];
         int slopeNum = 0;
         int noAdd = 0;
         int cnt;
             
-        for (int i = 0; i < N - 3; i++) {
-            Point[] p = new Point[N-i-1]; 
+        for (int i = 0; i < size - 3; i++) {
+            Point[] p = new Point[size-i-1]; 
 
-            for (int j = 0; j < N-i-1; j++)
+            for (int j = 0; j < size-i-1; j++)
                 p[j] = points[j+i+1];
                 
             cnt = 1;
             Arrays.sort(p, points[i].SLOPE_ORDER);
             slope1 = points[i].slopeTo(p[0]);
 
-            for (int j = 1; j < N-i-1; j++) {
+            for (int j = 1; j < size-i-1; j++) {
                 slope2 = points[i].slopeTo(p[j]);
                 if (slope1 == slope2) { 
                     cnt++;
@@ -58,7 +49,7 @@ public class Fast {
                     
                     for (int k = 0; k < slopeNum; k++) {
                         if (slope1 == slopeOld[k]) {
-                            for (int l = 0; l < N; l++) {
+                            for (int l = 0; l < size; l++) {
                                 if (slopeRecord[k][l] == points[i]) {
                                     noAdd = 1;
                                     cnt = 1;
@@ -76,14 +67,14 @@ public class Fast {
                             for (int l = 0; l < slopeNum; l++) 
                                 slopeOld[l] = slopeTmp[l];
                             
-                            Point[][] slopeRecordTmp = new Point[slopeNum][N];
+                            Point[][] slopeRecordTmp = new Point[slopeNum][size];
                             for (int l = 0; l < slopeNum; l++) {
-                                for (int m = 0; m < N; m++)
+                                for (int m = 0; m < size; m++)
                                     slopeRecordTmp[l][m] = slopeRecord[l][m];
                             }
-                            slopeRecord = new Point[slopeNum*2][N];
+                            slopeRecord = new Point[slopeNum*2][size];
                             for (int l = 0; l < slopeNum; l++) {
-                                for (int m = 0; m < N; m++)
+                                for (int m = 0; m < size; m++)
                                     slopeRecord[l][m] = slopeRecordTmp[l][m];
                             }
                         }
@@ -115,7 +106,7 @@ public class Fast {
             if (cnt >= 3) {
                 for (int k = 0; k < slopeNum; k++) {
                     if (slope1 == slopeOld[k]) {
-                        for (int l = 0; l < N; l++) {
+                        for (int l = 0; l < size; l++) {
                             if (slopeRecord[k][l] == points[i]) {
                                 noAdd = 1;
                                 cnt = 1;
@@ -133,14 +124,14 @@ public class Fast {
                             for (int l = 0; l < slopeNum; l++) 
                                 slopeOld[l] = slopeTmp[l];
                             
-                            Point[][] slopeRecordTmp = new Point[slopeNum][N];
+                            Point[][] slopeRecordTmp = new Point[slopeNum][size];
                             for (int l = 0; l < slopeNum; l++) {
-                                for (int m = 0; m < N; m++)
+                                for (int m = 0; m < size; m++)
                                     slopeRecordTmp[l][m] = slopeRecord[l][m];
                             }
-                            slopeRecord = new Point[slopeNum*2][N];
+                            slopeRecord = new Point[slopeNum*2][size];
                             for (int l = 0; l < slopeNum; l++) {
-                                for (int m = 0; m < N; m++)
+                                for (int m = 0; m < size; m++)
                                     slopeRecord[l][m] = slopeRecordTmp[l][m];
                             }
                         }
@@ -148,12 +139,12 @@ public class Fast {
                     slopeRecord[slopeNum][0] = points[i];
                     
                     for (int k = 0; k < cnt -1; k++) {
-                        StdOut.print(" -> " + p[N-i-1-cnt+k]);
-                        slopeRecord[slopeNum][k+1] = p[N-i-1-cnt+k];
+                        StdOut.print(" -> " + p[size-i-1-cnt+k]);
+                        slopeRecord[slopeNum][k+1] = p[size-i-1-cnt+k];
                     }
-                    StdOut.println(" -> " + p[N-i-2]);
-                    slopeRecord[slopeNum][cnt-1] = p[N-i-2];
-                    points[i].drawTo(p[N-i-2]);
+                    StdOut.println(" -> " + p[size-i-2]);
+                    slopeRecord[slopeNum][cnt-1] = p[size-i-2];
+                    points[i].drawTo(p[size-i-2]);
                     StdDraw.show(0);
                     slopeOld[slopeNum] = slope1;
                     slopeNum++;
@@ -162,5 +153,22 @@ public class Fast {
                 noAdd = 0;
             }   
         }
+    }
+    
+    public static void main(String[] args) {
+        In in = new In(args[0]);      // input file
+        int N = in.readInt();         // number of points N
+
+        // repeatedly read in sites to open and draw resulting system
+        Point[] points = new Point[N];
+        Fast fast = new Fast();
+        
+        int x, y;            
+        for (int i = 0; i < N; i++) {
+            x = in.readInt();
+            y = in.readInt();
+            points[i] = new Point(x, y);
+        }
+        fast.collinear(N, points);
     }
 }
